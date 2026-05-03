@@ -1,14 +1,5 @@
-import Header from '@/components/Header'
-import Hero from '@/components/Hero'
-import ThesisGrid from '@/components/ThesisGrid'
-import { mockTheses } from '@/data/mockTheses'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <main className="min-h-screen">
-      <Header />
-      <Hero />
-      <ThesisGrid theses={mockTheses} />
-    </main>
-  )
+export default function RootPage() {
+  redirect('/en')
 }

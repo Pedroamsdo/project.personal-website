@@ -1,30 +1,38 @@
-const NAV_LINKS = [
-  { label: 'Theses', href: '#theses' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
-]
+import Link from 'next/link'
+import { getDict } from '@/i18n/dictionaries'
+import type { Lang } from '@/i18n/types'
+import LangToggle from './LangToggle'
 
-function Header() {
+export default function Header({ lang }: { lang: Lang }) {
+  const t = getDict(lang)
+
   return (
-    <header className="border-b border-navy-700">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <a href="/" className="font-serif text-xl font-semibold tracking-tight text-gray-100">
-          Pedro Sampaio
-        </a>
-        <nav className="flex gap-8">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm text-gray-500 transition-colors hover:text-gray-100"
-            >
-              {link.label}
-            </a>
-          ))}
+    <header className="border-b border-rule">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <Link
+          href={`/${lang}`}
+          className="font-serif text-lg font-medium tracking-tight text-ink"
+        >
+          Pedro Anacleto
+        </Link>
+
+        <nav className="hidden items-center gap-10 md:flex">
+          <Link
+            href={`/${lang}`}
+            className="text-sm text-ink-muted transition-colors hover:text-ink"
+          >
+            {t.nav.articles}
+          </Link>
+          <Link
+            href={`/${lang}/about`}
+            className="text-sm text-ink-muted transition-colors hover:text-ink"
+          >
+            {t.nav.about}
+          </Link>
         </nav>
+
+        <LangToggle currentLang={lang} />
       </div>
     </header>
   )
 }
-
-export default Header
