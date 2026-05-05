@@ -1,13 +1,11 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { LANGS, type Lang } from '@/i18n/types'
 
 export default function LangToggle({ currentLang }: { currentLang: Lang }) {
+  const router = useRouter()
   const pathname = usePathname() || `/${currentLang}`
-  const [pressed, setPressed] = useState<Lang | null>(null)
 
   function hrefFor(lang: Lang) {
     const segments = pathname.split('/').filter(Boolean)
@@ -16,38 +14,37 @@ export default function LangToggle({ currentLang }: { currentLang: Lang }) {
     return `/${segments.join('/')}`
   }
 
+  const activeIndex = LANGS.indexOf(currentLang)
+
   return (
-    <div className="flex items-center gap-2 text-xs tracking-wider">
-      {LANGS.map((lang, i) => {
-        const isActive = lang === currentLang
-        const isPressed = pressed === lang
-        return (
-          <span key={lang} className="flex items-center gap-2">
-            <Link
-              href={hrefFor(lang)}
-              onMouseDown={() => setPressed(lang)}
-              onMouseUp={() => setPressed(null)}
-              onMouseLeave={() => setPressed(null)}
-              onTouchStart={() => setPressed(lang)}
-              onTouchEnd={() => setPressed(null)}
-              className={`group inline-flex items-center gap-1.5 transition-colors duration-300 ease-out ${
-                isActive ? 'text-ink' : 'text-ink-subtle hover:text-ink'
-              } ${isPressed ? 'scale-95' : 'scale-100'} transition-transform`}
-            >
-              <span
-                aria-hidden
-                className={`relative inline-block h-1.5 w-1.5 rounded-full border border-current transition-all duration-300 ease-out ${
-                  isActive
-                    ? 'bg-current shadow-[0_0_6px_currentColor]'
-                    : 'bg-transparent'
-                } ${isPressed ? 'scale-150' : 'scale-100'}`}
-              />
-              {lang.toUpperCase()}
-            </Link>
-            {i === 0 && <span className="text-ink-subtle">·</span>}
-          </span>
-        )
-      })}
-    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={currentLang === LANGS[1]}
+      aria-label={`Idioma: ${currentLang.toUpperCase()}`}
+      onClick={() => {
+        const next = LANGS[(activeIndex + 1) % LANGS.length]
+        router.push(hrefFor(next))
+      }}
+      className="relative inline-flex items-center h-7 w-[72px] rounded-full border border-ink/20 bg-paper text-[10px] tracking-[0.15em] font-medium select-none overflow-hidden transition-colors duration-300 hover:border-ink/40"
+    >
+      <span
+        aria-hidden
+        className="absolute top-0.5 bottom-0.5 left-0.5 w-[34px] rounded-full bg-ink transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)]"
+        style={{
+          transform: `translateX(${activeIndex * 34}px)`,
+        }}
+      />
+      {LANGS.map((lang, i) => (
+        <span
+          key={lang}
+          className={`relative z-10 flex-1 text-center transition-colors duration-300 ${
+            i === activeIndex ? 'text-paper' : 'text-ink-subtle'
+          }`}
+        >
+          {lang.toUpperCase()}
+        </span>
+      ))}
+    </button>
   )
 }
