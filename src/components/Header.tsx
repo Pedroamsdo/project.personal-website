@@ -10,7 +10,7 @@ export default function Header({ lang }: { lang: Lang }) {
   const t = getDict(lang)
 
   return (
-    <header className="border-b border-rule">
+    <header className="site-header">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Link
           href={`/${lang}`}
